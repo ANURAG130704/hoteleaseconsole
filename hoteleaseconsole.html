@@ -1,543 +1,432 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HotelEase — Booking Console</title>
-  <!-- Tailwind CSS CDN for quick styling -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>HotelEase</title>
   <style>
-    /* Simple fade */
-    .fade-enter { opacity: 0; transform: translateY(6px); }
-    .fade-enter-active { opacity: 1; transform: translateY(0); transition: all .2s ease; }
-    .badge { @apply inline-flex items-center px-2 py-0.5 text-xs rounded-full font-medium; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7fbff;
+      margin: 0;
+      padding: 20px;
+      color: #1a1a2e;
+    }
+    .hidden {
+      display: none;
+    }
+    h1, h2 {
+      margin-bottom: 10px;
+    }
+    button {
+      cursor: pointer;
+    }
+    /* Container */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 14px rgb(13 44 79 / 10%);
+    }
+    /* Tabs style */
+    .tabs {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+    .tab {
+      flex: 1;
+      margin: 0 10px;
+      padding: 12px 0;
+      text-align: center;
+      background: #fff;
+      border-radius: 15px;
+      border: 1px solid #cfd8dc;
+      font-weight: 500;
+      transition: background 0.3s, color 0.3s;
+    }
+    .tab.active {
+      background: #0a0f26;
+      color: white;
+      border: none;
+    }
+    /* Forms style */
+    form {
+      margin-top: 15px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    input[type="date"],
+    input[type="number"] {
+      padding: 12px 15px;
+      margin-top: 6px;
+      margin-bottom: 20px;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 15px;
+      border: 1px solid #cfd8dc;
+      font-size: 16px;
+      color: #6b7280;
+      transition: border-color 0.3s;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    select:focus,
+    input[type="date"]:focus,
+    input[type="number"]:focus {
+      border-color: #0a0f26;
+      outline: none;
+    }
+    label {
+      font-weight: 600;
+    }
+    .form-row {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .form-group {
+      flex: 1;
+      min-width: 150px;
+    }
+    button.primary {
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      padding: 12px 30px;
+      font-weight: 600;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+    button.primary:hover {
+      background: #1e40af;
+    }
+    .auth-links {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    .auth-links span {
+      color: #2563eb;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    /* Availability and Latest bookings box */
+    .info-box {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 30px;
+      background: #f9fafb;
+    }
+    .availability-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .available-count {
+      color: #10b981;
+      font-weight: 500;
+    }
+    /* Layout */
+    .main-content {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+    .left, .right {
+      flex: 1;
+      min-width: 280px;
+    }
   </style>
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-800">
-  <div class="max-w-6xl mx-auto p-6">
-    <!-- Header -->
-    <header class="flex items-center justify-between gap-4">
-      <div>
-        <h1 class="text-3xl font-bold tracking-tight">HotelEase</h1>
-        <p class="text-slate-500">Book rooms, cancel reservations, and view booking history — all in one place.</p>
-      </div>
-      <div class="flex items-center gap-2">
-        <button id="exportJson" class="px-3 py-2 rounded-xl bg-white shadow hover:shadow-md border">Export JSON</button>
-        <label class="px-3 py-2 rounded-xl bg-white shadow hover:shadow-md border cursor-pointer">
-          Import JSON <input id="importJson" type="file" accept="application/json" class="hidden" />
-        </label>
-      </div>
-    </header>
+<body>
 
-    <!-- Tabs -->
-    <nav class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-2" role="tablist">
-      <button data-tab="book" class="tab-btn px-4 py-3 rounded-2xl bg-slate-900 text-white">Book</button>
-      <button data-tab="manage" class="tab-btn px-4 py-3 rounded-2xl bg-white border shadow">Manage</button>
-      <button data-tab="history" class="tab-btn px-4 py-3 rounded-2xl bg-white border shadow">History</button>
-      <button data-tab="hotels" class="tab-btn px-4 py-3 rounded-2xl bg-white border shadow">Hotels</button>
-    </nav>
+  <!-- LOGIN VIEW -->
+  <div id="loginView" class="container">
+    <h1>Welcome to HotelEase</h1>
+    <h2>Login to your account</h2>
+    <form id="loginForm">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" placeholder="you@example.com" required />
+      
+      <label for="loginPassword">Password</label>
+      <input type="password" id="loginPassword" placeholder="Your password" required />
+      
+      <button type="submit" class="primary">Login</button>
+    </form>
+    <div class="auth-links">
+      Don't have an account? <span id="showSignUp">Sign Up</span>
+    </div>
+  </div>
 
-    <!-- Panels -->
-    <section id="panel-book" class="mt-6 fade-enter-active">
-      <div class="grid md:grid-cols-5 gap-6">
-        <form id="bookingForm" class="md:col-span-3 p-5 rounded-2xl bg-white shadow border space-y-4">
-          <h2 class="text-xl font-semibold">Create a Booking</h2>
-          <div class="grid sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm mb-1">Guest name</label>
-              <input required name="guestName" class="w-full px-3 py-2 rounded-xl border" placeholder="John Doe" />
-            </div>
-            <div>
-              <label class="block text-sm mb-1">Email</label>
-              <input required type="email" name="email" class="w-full px-3 py-2 rounded-xl border" placeholder="john@example.com" />
-            </div>
-            <div>
-              <label class="block text-sm mb-1">Hotel</label>
-              <select id="hotelSelect" name="hotelId" class="w-full px-3 py-2 rounded-xl border"></select>
-            </div>
-            <div>
-              <label class="block text-sm mb-1">Room type</label>
-              <select id="roomTypeSelect" name="roomType" class="w-full px-3 py-2 rounded-xl border"></select>
-            </div>
-            <div>
-              <label class="block text-sm mb-1">Check-in</label>
-              <input required type="date" name="checkIn" class="w-full px-3 py-2 rounded-xl border" />
-            </div>
-            <div>
-              <label class="block text-sm mb-1">Check-out</label>
-              <input required type="date" name="checkOut" class="w-full px-3 py-2 rounded-xl border" />
-            </div>
-            <div>
-              <label class="block text-sm mb-1">Guests</label>
-              <input required type="number" min="1" name="guests" class="w-full px-3 py-2 rounded-xl border" value="1" />
-            </div>
-            <div>
-              <label class="block text-sm mb-1">Special requests</label>
-              <input name="notes" class="w-full px-3 py-2 rounded-xl border" placeholder="(optional)" />
-            </div>
-          </div>
-          <div class="flex items-center justify-between">
-            <div id="pricePreview" class="text-sm text-slate-600">Select dates to see price.</div>
-            <button class="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700">Book now</button>
-          </div>
-        </form>
+  <!-- SIGN UP VIEW -->
+  <div id="signUpView" class="container hidden">
+    <h1>Welcome to HotelEase</h1>
+    <h2>Create a new account</h2>
+    <form id="signUpForm">
+      <label for="signUpName">Name</label>
+      <input type="text" id="signUpName" placeholder="John Doe" required />
 
-        <aside class="md:col-span-2 space-y-4">
-          <div class="p-5 rounded-2xl bg-white shadow border">
-            <h3 class="font-semibold mb-2">Availability</h3>
-            <ul id="availability" class="space-y-2 text-sm"></ul>
-          </div>
-          <div class="p-5 rounded-2xl bg-white shadow border">
-            <h3 class="font-semibold mb-2">Latest bookings</h3>
-            <ul id="latestList" class="space-y-2 text-sm"></ul>
-          </div>
-        </aside>
-      </div>
-    </section>
+      <label for="signUpEmail">Email</label>
+      <input type="email" id="signUpEmail" placeholder="you@example.com" required />
 
-    <section id="panel-manage" class="hidden mt-6">
-      <div class="p-5 rounded-2xl bg-white shadow border">
-        <div class="flex items-center gap-3 mb-4">
-          <input id="searchManage" class="px-3 py-2 rounded-xl border w-full sm:w-80" placeholder="Search by name, email or ID" />
-        </div>
-        <div class="overflow-x-auto">
-          <table class="min-w-full text-sm">
-            <thead>
-              <tr class="text-left text-slate-500">
-                <th class="py-2 pr-4">ID</th>
-                <th class="py-2 pr-4">Guest</th>
-                <th class="py-2 pr-4">Hotel</th>
-                <th class="py-2 pr-4">Room</th>
-                <th class="py-2 pr-4">Check-in</th>
-                <th class="py-2 pr-4">Check-out</th>
-                <th class="py-2 pr-4">Price</th>
-                <th class="py-2 pr-4">Status</th>
-                <th class="py-2 pr-4">Action</th>
-              </tr>
-            </thead>
-            <tbody id="manageTbody"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+      <label for="signUpPassword">Password</label>
+      <input type="password" id="signUpPassword" placeholder="Choose a password" required />
 
-    <section id="panel-history" class="hidden mt-6">
-      <div class="p-5 rounded-2xl bg-white shadow border">
-        <div class="flex items-center gap-3 mb-4">
-          <input id="searchHistory" class="px-3 py-2 rounded-xl border w-full sm:w-80" placeholder="Search history" />
-          <button id="clearAll" class="ml-auto px-3 py-2 rounded-xl bg-rose-50 text-rose-700 border">Clear all data</button>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="min-w-full text-sm">
-            <thead>
-              <tr class="text-left text-slate-500">
-                <th class="py-2 pr-4">ID</th>
-                <th class="py-2 pr-4">Guest</th>
-                <th class="py-2 pr-4">Hotel</th>
-                <th class="py-2 pr-4">Room</th>
-                <th class="py-2 pr-4">Dates</th>
-                <th class="py-2 pr-4">Status</th>
-                <th class="py-2 pr-4">When</th>
-              </tr>
-            </thead>
-            <tbody id="historyTbody"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+      <button type="submit" class="primary">Sign Up</button>
+    </form>
+    <div class="auth-links">
+      Already have an account? <span id="showLogin">Login</span>
+    </div>
+  </div>
 
-    <section id="panel-hotels" class="hidden mt-6">
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="p-5 rounded-2xl bg-white shadow border space-y-4">
-          <h2 class="text-xl font-semibold">Hotels</h2>
-          <ul id="hotelList" class="space-y-3"></ul>
-        </div>
-        <form id="hotelForm" class="p-5 rounded-2xl bg-white shadow border space-y-4">
-          <h2 class="text-xl font-semibold">Add / Edit Hotel</h2>
-          <input type="hidden" name="id" />
-          <div>
-            <label class="block text-sm mb-1">Hotel name</label>
-            <input required name="name" class="w-full px-3 py-2 rounded-xl border" placeholder="Hotel California" />
-          </div>
-          <div>
-            <label class="block text-sm mb-1">City</label>
-            <input required name="city" class="w-full px-3 py-2 rounded-xl border" placeholder="Bhubaneswar" />
-          </div>
-          <div>
-            <label class="block text-sm mb-1">Room inventory & price (per night)</label>
-            <div class="grid grid-cols-3 gap-3 text-sm">
-              <div>
-                <label>Standard rooms</label>
-                <input name="stdCount" type="number" min="0" class="w-full px-3 py-2 rounded-xl border" value="10" />
-                <input name="stdPrice" type="number" min="0" class="mt-1 w-full px-3 py-2 rounded-xl border" value="2500" />
-              </div>
-              <div>
-                <label>Deluxe rooms</label>
-                <input name="dlxCount" type="number" min="0" class="w-full px-3 py-2 rounded-xl border" value="5" />
-                <input name="dlxPrice" type="number" min="0" class="mt-1 w-full px-3 py-2 rounded-xl border" value="4000" />
-              </div>
-              <div>
-                <label>Suite rooms</label>
-                <input name="steCount" type="number" min="0" class="w-full px-3 py-2 rounded-xl border" value="2" />
-                <input name="stePrice" type="number" min="0" class="mt-1 w-full px-3 py-2 rounded-xl border" value="6500" />
-              </div>
+  <!-- MAIN APP VIEW -->
+  <div id="appView" class="container hidden">
+    <h1><strong>HotelEase</strong></h1>
+    <p>Book rooms, cancel reservations, and view booking history — all in one place.</p>
+
+    <div style="text-align: right; margin-bottom: 20px;">
+      <button id="logoutBtn" style="background:#dc2626; color:white; border:none; padding: 8px 15px; border-radius: 10px; font-weight: 600; cursor: pointer;">Logout</button>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="book">Book</div>
+      <div class="tab" data-tab="manage">Manage</div>
+      <div class="tab" data-tab="history">History</div>
+      <div class="tab" data-tab="hotels">Hotels</div>
+    </div>
+
+    <div id="tabContent">
+      <!-- Booking Tab Content -->
+      <div id="book" class="tab-pane">
+        <form id="bookingForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="guestName">Guest name</label>
+              <input type="text" id="guestName" placeholder="John Doe" required />
+            </div>
+            <div class="form-group">
+              <label for="guestEmail">Email</label>
+              <input type="email" id="guestEmail" placeholder="john@example.com" required />
             </div>
           </div>
-          <div class="flex gap-2">
-            <button class="px-4 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700">Save Hotel</button>
-            <button id="resetHotelForm" type="button" class="px-4 py-2 rounded-xl bg-white border">Reset</button>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="hotelSelect">Hotel</label>
+              <select id="hotelSelect">
+                <option>Sea View Residency — Puri</option>
+                <option>Mountain Lodge — Shimla</option>
+                <option>City Central — Delhi</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="roomType">Room type</label>
+              <select id="roomType">
+                <option value="2200">Standard — ₹2200/night</option>
+                <option value="4000">Deluxe — ₹4000/night</option>
+                <option value="7000">Suite — ₹7000/night</option>
+              </select>
+            </div>
           </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="checkIn">Check-in</label>
+              <input type="date" id="checkIn" required />
+            </div>
+            <div class="form-group">
+              <label for="checkOut">Check-out</label>
+              <input type="date" id="checkOut" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="guestsCount">Guests</label>
+              <input type="number" id="guestsCount" min="1" value="1" required />
+            </div>
+            <div class="form-group">
+              <label for="specialRequests">Special requests</label>
+              <input type="text" id="specialRequests" placeholder="(optional)" />
+            </div>
+          </div>
+
+          <p><strong>Price:</strong> ₹<span id="price">2200</span> for 1 night(s)</p>
+          <button type="submit" class="primary">Book now</button>
         </form>
       </div>
-    </section>
 
-    <footer class="mt-10 text-center text-xs text-slate-500">
-      <p>Local demo — data is stored in your browser (localStorage). You can export/import JSON above.</p>
-    </footer>
+      <!-- Manage Tab Content -->
+      <div id="manage" class="tab-pane hidden">
+        <p>Manage your bookings here.</p>
+      </div>
+
+      <!-- History Tab Content -->
+      <div id="history" class="tab-pane hidden">
+        <p>Booking history will appear here.</p>
+      </div>
+
+      <!-- Hotels Tab Content -->
+      <div id="hotels" class="tab-pane hidden">
+        <p>List of hotels available.</p>
+      </div>
+
+      <div class="right">
+        <div class="info-box">
+          <h3>Availability</h3>
+          <div class="availability-item"><span>Standard</span><span class="available-count">12 / 12 available</span></div>
+          <div class="availability-item"><span>Deluxe</span><span class="available-count">6 / 6 available</span></div>
+          <div class="availability-item"><span>Suite</span><span class="available-count">2 / 2 available</span></div>
+        </div>
+
+        <div class="info-box" style="margin-top: 20px;">
+          <h3>Latest bookings</h3>
+          <p>No bookings yet.</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
-    // ----------------------
-    // Utilities & Data Layer
-    // ----------------------
-    const KEY = 'hotelEase_v1';
-    const uid = () => Math.random().toString(36).slice(2, 8).toUpperCase();
-    const today = () => new Date().toISOString().slice(0,10);
-    const fmt = (d) => new Date(d + 'T00:00:00');
-    const nightsBetween = (a, b) => Math.max(1, Math.round((fmt(b) - fmt(a)) / (1000*60*60*24)));
+    // Elements
+    const loginView = document.getElementById('loginView');
+    const signUpView = document.getElementById('signUpView');
+    const appView = document.getElementById('appView');
+    const showSignUp = document.getElementById('showSignUp');
+    const showLogin = document.getElementById('showLogin');
+    const logoutBtn = document.getElementById('logoutBtn');
 
-    function load() {
-      const raw = localStorage.getItem(KEY);
-      if (!raw) return seed();
-      try { return JSON.parse(raw); } catch { return seed(); }
-    }
-
-    function save(state) { localStorage.setItem(KEY, JSON.stringify(state)); }
-
-    function seed() {
-      const state = {
-        hotels: [
-          { id: uid(), name: 'Sea View Residency', city: 'Puri', rooms: { standard: { count: 12, price: 2200 }, deluxe: { count: 6, price: 3600 }, suite: { count: 2, price: 6000 } } },
-          { id: uid(), name: 'City Comfort Inn', city: 'Bhubaneswar', rooms: { standard: { count: 20, price: 2000 }, deluxe: { count: 8, price: 3200 }, suite: { count: 3, price: 5200 } } }
-        ],
-        bookings: [] // each { id, guestName, email, hotelId, roomType, checkIn, checkOut, guests, notes, price, status, createdAt, canceledAt }
-      };
-      save(state); return state;
-    }
-
-    let state = load();
-
-    // ---------------
-    // Tab navigation
-    // ---------------
-    const panels = {
-      book: document.getElementById('panel-book'),
-      manage: document.getElementById('panel-manage'),
-      history: document.getElementById('panel-history'),
-      hotels: document.getElementById('panel-hotels')
-    };
-
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    // Show sign-up form
+    showSignUp.addEventListener('click', () => {
+      loginView.classList.add('hidden');
+      signUpView.classList.remove('hidden');
     });
 
-    function switchTab(key) {
-      document.querySelectorAll('.tab-btn').forEach(b => {
-        b.classList.toggle('bg-slate-900', b.dataset.tab === key);
-        b.classList.toggle('text-white', b.dataset.tab === key);
-        b.classList.toggle('bg-white', b.dataset.tab !== key);
-        b.classList.toggle('border', true);
-      });
-      Object.entries(panels).forEach(([k, el]) => {
-        if (k === key) {
-          el.classList.remove('hidden');
-          el.classList.add('fade-enter');
-          setTimeout(() => { el.classList.add('fade-enter-active'); el.classList.remove('fade-enter'); }, 0);
-        } else el.classList.add('hidden');
-      });
-      if (key === 'manage') renderManage();
-      if (key === 'history') renderHistory();
-      if (key === 'hotels') renderHotels();
-      if (key === 'book') { populateHotelSelects(); renderAvailability(); renderLatest(); }
+    // Show login form
+    showLogin.addEventListener('click', () => {
+      signUpView.classList.add('hidden');
+      loginView.classList.remove('hidden');
+    });
+
+    // Mock user database in localStorage
+    const usersKey = 'hotelsease_users';
+
+    function getUsers() {
+      return JSON.parse(localStorage.getItem(usersKey)) || [];
     }
 
-    // -------------------
-    // Hotels CRUD + UI
-    // -------------------
-    const hotelSelect = document.getElementById('hotelSelect');
-    const roomTypeSelect = document.getElementById('roomTypeSelect');
-    const hotelList = document.getElementById('hotelList');
-    const hotelForm = document.getElementById('hotelForm');
-
-    function renderHotels() {
-      hotelList.innerHTML = '';
-      state.hotels.forEach(h => {
-        const li = document.createElement('li');
-        li.className = 'p-4 rounded-xl border flex items-start justify-between gap-4';
-        li.innerHTML = `
-          <div>
-            <div class="font-medium">${h.name} <span class="text-xs text-slate-500">(${h.city})</span></div>
-            <div class="text-xs text-slate-600 mt-1">Std: ${h.rooms.standard.count} @ ₹${h.rooms.standard.price} • Dlx: ${h.rooms.deluxe.count} @ ₹${h.rooms.deluxe.price} • Suite: ${h.rooms.suite.count} @ ₹${h.rooms.suite.price}</div>
-          </div>
-          <div class="flex gap-2">
-            <button data-edit="${h.id}" class="px-2 py-1 rounded-lg bg-white border">Edit</button>
-            <button data-delete="${h.id}" class="px-2 py-1 rounded-lg bg-rose-50 text-rose-700 border">Delete</button>
-          </div>`;
-        hotelList.appendChild(li);
-      });
-      // edit/delete handlers
-      hotelList.querySelectorAll('[data-edit]').forEach(btn => btn.onclick = () => editHotel(btn.dataset.edit));
-      hotelList.querySelectorAll('[data-delete]').forEach(btn => btn.onclick = () => deleteHotel(btn.dataset.delete));
-      populateHotelSelects();
+    function saveUsers(users) {
+      localStorage.setItem(usersKey, JSON.stringify(users));
     }
 
-    function populateHotelSelects() {
-      hotelSelect.innerHTML = state.hotels.map(h => `<option value="${h.id}">${h.name} — ${h.city}</option>`).join('');
-      updateRoomTypes();
-    }
-
-    function hotelById(id) { return state.hotels.find(h => h.id === id); }
-
-    function updateRoomTypes() {
-      const h = hotelById(hotelSelect.value) || state.hotels[0];
-      if (!h) return;
-      roomTypeSelect.innerHTML = ['standard','deluxe','suite']
-        .filter(t => (h.rooms[t]?.count ?? 0) > 0)
-        .map(t => `<option value="${t}">${t[0].toUpperCase()+t.slice(1)} — ₹${h.rooms[t].price}/night</option>`)
-        .join('');
-      renderAvailability();
-      updatePricePreview();
-    }
-
-    hotelSelect.addEventListener('change', updateRoomTypes);
-    roomTypeSelect.addEventListener('change', () => { renderAvailability(); updatePricePreview(); });
-
-    function editHotel(id) {
-      const h = hotelById(id);
-      if (!h) return;
-      hotelForm.name.value = h.name;
-      hotelForm.city.value = h.city;
-      hotelForm.id.value = h.id;
-      hotelForm.stdCount.value = h.rooms.standard.count;
-      hotelForm.stdPrice.value = h.rooms.standard.price;
-      hotelForm.dlxCount.value = h.rooms.deluxe.count;
-      hotelForm.dlxPrice.value = h.rooms.deluxe.price;
-      hotelForm.steCount.value = h.rooms.suite.count;
-      hotelForm.stePrice.value = h.rooms.suite.price;
-    }
-
-    function deleteHotel(id) {
-      if (!confirm('Delete this hotel?')) return;
-      state.hotels = state.hotels.filter(h => h.id !== id);
-      save(state); renderHotels(); populateHotelSelects();
-    }
-
-    hotelForm.addEventListener('submit', (e) => {
+    // Login form submit
+    document.getElementById('loginForm').addEventListener('submit', e => {
       e.preventDefault();
-      const f = new FormData(hotelForm);
-      const data = Object.fromEntries(f.entries());
-      const payload = {
-        id: data.id || uid(),
-        name: data.name.trim(), city: data.city.trim(),
-        rooms: {
-          standard: { count: +data.stdCount||0, price: +data.stdPrice||0 },
-          deluxe:   { count: +data.dlxCount||0, price: +data.dlxPrice||0 },
-          suite:    { count: +data.steCount||0, price: +data.stePrice||0 }
-        }
-      };
-      const idx = state.hotels.findIndex(h => h.id === payload.id);
-      if (idx >= 0) state.hotels[idx] = payload; else state.hotels.push(payload);
-      save(state); hotelForm.reset(); renderHotels(); populateHotelSelects();
+      const email = e.target.loginEmail.value.trim();
+      const password = e.target.loginPassword.value;
+
+      const users = getUsers();
+      const user = users.find(u => u.email === email && u.password === password);
+
+      if (user) {
+        alert('Login successful!');
+        loginView.classList.add('hidden');
+        appView.classList.remove('hidden');
+      } else {
+        alert('Invalid email or password.');
+      }
     });
 
-    document.getElementById('resetHotelForm').onclick = () => hotelForm.reset();
-
-    // ----------------------
-    // Booking + Availability
-    // ----------------------
-    const bookingForm = document.getElementById('bookingForm');
-    const availability = document.getElementById('availability');
-    const latestList = document.getElementById('latestList');
-    const pricePreview = document.getElementById('pricePreview');
-
-    function bookingsFor(hotelId, roomType) {
-      return state.bookings.filter(b => b.hotelId === hotelId && b.roomType === roomType && b.status === 'CONFIRMED');
-    }
-
-    function isOverlap(aStart, aEnd, bStart, bEnd) {
-      return fmt(aStart) < fmt(bEnd) && fmt(bStart) < fmt(aEnd);
-    }
-
-    function availableCount(hotel, roomType, start, end) {
-      const total = hotel.rooms[roomType]?.count || 0;
-      const booked = bookingsFor(hotel.id, roomType).filter(b => isOverlap(start, end, b.checkIn, b.checkOut)).length;
-      return Math.max(0, total - booked);
-    }
-
-    function updatePricePreview() {
-      const checkIn = bookingForm.checkIn.value || today();
-      const checkOut = bookingForm.checkOut.value || today();
-      const h = hotelById(bookingForm.hotelId.value);
-      const rt = bookingForm.roomType.value;
-      if (!h || !rt) { pricePreview.textContent = 'Select dates to see price.'; return; }
-      const nights = nightsBetween(checkIn, checkOut);
-      const pricePerNight = h.rooms[rt].price;
-      pricePreview.textContent = `Price: ₹${(nights * pricePerNight).toLocaleString()} for ${nights} night(s)`;
-    }
-
-    ['checkIn','checkOut'].forEach(n => bookingForm[n].addEventListener('change', () => { renderAvailability(); updatePricePreview(); }));
-
-    function renderAvailability() {
-      const h = hotelById(hotelSelect.value); if (!h) return;
-      const start = bookingForm.checkIn.value || today();
-      const end = bookingForm.checkOut.value || today();
-      const types = ['standard','deluxe','suite'];
-      availability.innerHTML = types.map(t => {
-        const total = h.rooms[t]?.count ?? 0; if (!total) return '';
-        const free = availableCount(h, t, start, end);
-        const badgeClass = free>0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700';
-        return `<li class="flex items-center justify-between border rounded-xl px-3 py-2">
-          <span class="font-medium">${t[0].toUpperCase()+t.slice(1)}</span>
-          <span class="badge ${badgeClass}">${free} / ${total} available</span>
-        </li>`;
-      }).join('');
-    }
-
-    function renderLatest() {
-      const latest = [...state.bookings].slice(-5).reverse();
-      latestList.innerHTML = latest.length ? latest.map(b => `<li class="flex justify-between"><span class="truncate">${b.guestName} — <span class="text-slate-500">${b.id}</span></span><span class="text-slate-600">${b.status}</span></li>`).join('') : '<li class="text-slate-500">No bookings yet.</li>';
-    }
-
-    bookingForm.addEventListener('submit', (e) => {
+    // Sign-up form submit
+    document.getElementById('signUpForm').addEventListener('submit', e => {
       e.preventDefault();
-      const f = new FormData(bookingForm);
-      const data = Object.fromEntries(f.entries());
-      const start = data.checkIn, end = data.checkOut;
-      if (fmt(end) <= fmt(start)) { alert('Check-out must be after check-in'); return; }
-      const h = hotelById(data.hotelId);
-      if (availableCount(h, data.roomType, start, end) <= 0) { alert('Selected room type is not available for these dates.'); return; }
-      const nights = nightsBetween(start, end);
-      const price = nights * h.rooms[data.roomType].price;
-      const booking = {
-        id: uid(),
-        guestName: data.guestName.trim(), email: data.email.trim(),
-        hotelId: data.hotelId, roomType: data.roomType,
-        checkIn: start, checkOut: end, guests: +data.guests || 1, notes: data.notes || '',
-        price, status: 'CONFIRMED', createdAt: new Date().toISOString()
-      };
-      state.bookings.push(booking); save(state);
-      bookingForm.reset(); renderAvailability(); renderLatest(); updateRoomTypes();
-      alert('Booking confirmed! ID: ' + booking.id);
+      const name = e.target.signUpName.value.trim();
+      const email = e.target.signUpEmail.value.trim();
+      const password = e.target.signUpPassword.value;
+
+      if (!name || !email || !password) {
+        alert('Please fill all fields');
+        return;
+      }
+
+      let users = getUsers();
+      if (users.find(u => u.email === email)) {
+        alert('Email already registered.');
+        return;
+      }
+
+      users.push({ name, email, password });
+      saveUsers(users);
+      alert('Sign-up successful! Please log in.');
+
+      signUpView.classList.add('hidden');
+      loginView.classList.remove('hidden');
     });
 
-    // ---------------
-    // Manage (Active)
-    // ---------------
-    const manageTbody = document.getElementById('manageTbody');
-    const searchManage = document.getElementById('searchManage');
-
-    function renderManage() {
-      const q = searchManage.value?.toLowerCase() || '';
-      const rows = state.bookings.filter(b => b.status === 'CONFIRMED' && (
-        b.id.toLowerCase().includes(q) || b.guestName.toLowerCase().includes(q) || b.email.toLowerCase().includes(q)
-      ));
-      manageTbody.innerHTML = rows.map(b => {
-        const h = hotelById(b.hotelId);
-        return `<tr class="border-t">
-          <td class="py-2 pr-4 font-medium">${b.id}</td>
-          <td class="py-2 pr-4">${b.guestName}<div class="text-xs text-slate-500">${b.email}</div></td>
-          <td class="py-2 pr-4">${h?.name || '—'}</td>
-          <td class="py-2 pr-4">${b.roomType}</td>
-          <td class="py-2 pr-4">${b.checkIn}</td>
-          <td class="py-2 pr-4">${b.checkOut}</td>
-          <td class="py-2 pr-4">₹${b.price.toLocaleString()}</td>
-          <td class="py-2 pr-4"><span class="badge bg-emerald-50 text-emerald-700">${b.status}</span></td>
-          <td class="py-2 pr-4">
-            <button data-cancel="${b.id}" class="px-2 py-1 rounded-lg bg-rose-50 text-rose-700 border">Cancel</button>
-          </td>
-        </tr>`;
-      }).join('') || '<tr><td colspan="9" class="py-6 text-center text-slate-500">No active bookings.</td></tr>';
-      manageTbody.querySelectorAll('[data-cancel]').forEach(btn => btn.onclick = () => cancelBooking(btn.dataset.cancel));
-    }
-
-    function cancelBooking(id) {
-      const reason = prompt('Cancel booking ' + id + '? Optional reason:');
-      const b = state.bookings.find(x => x.id === id);
-      if (!b) return; b.status = 'CANCELED'; b.canceledAt = new Date().toISOString(); b.cancelReason = reason || '';
-      save(state); renderManage(); renderHistory(); renderAvailability();
-    }
-
-    searchManage.addEventListener('input', renderManage);
-
-    // -------------
-    // History view
-    // -------------
-    const historyTbody = document.getElementById('historyTbody');
-    const searchHistory = document.getElementById('searchHistory');
-
-    function renderHistory() {
-      const q = searchHistory.value?.toLowerCase() || '';
-      const rows = state.bookings.filter(b => (
-        b.id.toLowerCase().includes(q) || b.guestName.toLowerCase().includes(q) || b.email.toLowerCase().includes(q)
-      ));
-      historyTbody.innerHTML = rows.reverse().map(b => {
-        const h = hotelById(b.hotelId);
-        const badgeClass = b.status === 'CONFIRMED' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700';
-        const when = b.status === 'CONFIRMED' ? b.createdAt : b.canceledAt;
-        return `<tr class="border-t">
-          <td class="py-2 pr-4 font-medium">${b.id}</td>
-          <td class="py-2 pr-4">${b.guestName}<div class="text-xs text-slate-500">${b.email}</div></td>
-          <td class="py-2 pr-4">${h?.name || '—'}</td>
-          <td class="py-2 pr-4">${b.roomType}</td>
-          <td class="py-2 pr-4">${b.checkIn} → ${b.checkOut}</td>
-          <td class="py-2 pr-4"><span class="badge ${badgeClass}">${b.status}</span></td>
-          <td class="py-2 pr-4 text-xs">${when?.slice(0,19).replace('T',' ') || ''}</td>
-        </tr>`;
-      }).join('') || '<tr><td colspan="7" class="py-6 text-center text-slate-500">No history yet.</td></tr>';
-    }
-
-    searchHistory.addEventListener('input', renderHistory);
-
-    // ---------------
-    // Import / Export
-    // ---------------
-    document.getElementById('exportJson').onclick = () => {
-      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'hoteleasen_data.json';
-      a.click();
-    };
-
-    document.getElementById('importJson').addEventListener('change', (e) => {
-      const file = e.target.files[0]; if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => { try { state = JSON.parse(reader.result); save(state); alert('Imported!'); init(); } catch { alert('Invalid JSON'); } };
-      reader.readAsText(file);
+    // Logout button
+    logoutBtn.addEventListener('click', () => {
+      appView.classList.add('hidden');
+      loginView.classList.remove('hidden');
     });
 
-    // Clear all
-    document.getElementById('clearAll').onclick = () => {
-      if (!confirm('This will erase all hotels and bookings from this browser. Continue?')) return;
-      localStorage.removeItem(KEY); state = seed(); init();
-    };
+    // Tabs switching logic
+    const tabs = document.querySelectorAll('.tab');
+    const tabPanes = document.querySelectorAll('.tab-pane');
 
-    // --------------
-    // Boot sequence
-    // --------------
-    function init() {
-      populateHotelSelects();
-      bookingForm.checkIn.value = today();
-      const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0,10);
-      bookingForm.checkOut.value = tomorrow;
-      renderAvailability();
-      renderLatest();
-      renderManage();
-      renderHistory();
-      switchTab('book');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        const target = tab.getAttribute('data-tab');
+        tabPanes.forEach(pane => {
+          pane.classList.toggle('hidden', pane.id !== target);
+        });
+      });
+    });
+
+    // Booking form price calculation
+    const roomTypeSelect = document.getElementById('roomType');
+    const checkInInput = document.getElementById('checkIn');
+    const checkOutInput = document.getElementById('checkOut');
+    const priceDisplay = document.getElementById('price');
+
+    function calculatePrice() {
+      const pricePerNight = parseInt(roomTypeSelect.value, 10);
+      const checkInDate = new Date(checkInInput.value);
+      const checkOutDate = new Date(checkOutInput.value);
+      if (isNaN(checkInDate) || isNaN(checkOutDate) || checkOutDate <= checkInDate) {
+        priceDisplay.textContent = 0;
+        return;
+      }
+      const diffTime = Math.abs(checkOutDate - checkInDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      priceDisplay.textContent = pricePerNight * diffDays;
     }
 
-    init();
+    roomTypeSelect.addEventListener('change', calculatePrice);
+    checkInInput.addEventListener('change', calculatePrice);
+    checkOutInput.addEventListener('change', calculatePrice);
+
+    // Initialize check-in/out dates with defaults for demo
+    const today = new Date().toISOString().split('T')[0];
+    checkInInput.value = today;
+    let tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    checkOutInput.value = tomorrow.toISOString().split('T')[0];
+    calculatePrice();
+
+    // Booking form submit (just show alert for now)
+    document.getElementById('bookingForm').addEventListener('submit', e => {
+      e.preventDefault();
+      alert('Booking submitted! (This is a demo - no backend connected.)');
+    });
   </script>
 </body>
 </html>
